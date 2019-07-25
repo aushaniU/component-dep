@@ -78,7 +78,7 @@ public class MaskPropertyReader {
 
                 APIOperationDTO apiOperationDTO = new APIOperationDTO();
 
-                apiOperationDTO.setOperantionName(apiOperation.getOperantionName());
+                apiOperationDTO.setOperantionName(apiOperation.getRequesturl());
                 apiOperationDTO.setPropertyPath(apiOperation.getPropertyPath());
                 apiOperationDTO.setMaskablType(apiOperation.getMaskablType());
 

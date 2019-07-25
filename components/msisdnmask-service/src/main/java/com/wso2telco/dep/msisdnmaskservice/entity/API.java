@@ -27,6 +27,7 @@ public class API {
 
     private String apiName;
     private String regexPattern;
+    private String maskAlgorithem;
     List<APIoperations> apIoperationsLists;
 
     public String getApiName() {
@@ -45,6 +46,15 @@ public class API {
     @XmlElement(name = "regexPattern")
     public void setRegexPattern(String regexPattern) {
         this.regexPattern = regexPattern;
+    }
+
+    public String getMaskAlgorithem() {
+        return maskAlgorithem;
+    }
+
+    @XmlElement(name = "maskAlgorithem")
+    public void setMaskAlgorithem(String maskAlgorithem) {
+        this.maskAlgorithem = maskAlgorithem;
     }
 
     public List<APIoperations> getApiOperationList() {

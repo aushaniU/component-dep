@@ -24,6 +24,7 @@ import java.util.List;
 public class APIDTO {
     private String apiName;
     private String regexPattern;
+    private String maskAlgorithem;
     private List<APIOperationDTO> apiOperationList = new ArrayList<APIOperationDTO>();
 
     public String getApiName() {
@@ -40,6 +41,14 @@ public class APIDTO {
 
     public void setRegexPattern(String regexPattern) {
         this.regexPattern = regexPattern;
+    }
+
+    public String getMaskAlgorithem() {
+        return maskAlgorithem;
+    }
+
+    public void setMaskAlgorithem(String maskAlgorithem) {
+        this.maskAlgorithem = maskAlgorithem;
     }
 
     public List<APIOperationDTO> getApiOperationList() {

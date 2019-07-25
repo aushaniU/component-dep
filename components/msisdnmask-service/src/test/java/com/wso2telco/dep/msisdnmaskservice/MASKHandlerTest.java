@@ -19,26 +19,40 @@
 package com.wso2telco.dep.msisdnmaskservice;
 
 import org.apache.axis2.context.MessageContext;
+import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.mockito.Mockito;
 
+import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.Mockito.*;
+
 public class MASKHandlerTest {
+
     @Test
     public void updateRequestData_test() {
         MASKHandler maskHandler =new MASKHandler();
 
         MessageContext mockMessageContext = Mockito.mock(MessageContext.class);
         Axis2MessageContext mockAxis2MessageContext = Mockito.mock(Axis2MessageContext.class);
-        Mockito.when(mockAxis2MessageContext.getAxis2MessageContext()).thenReturn(mockMessageContext);
+        when(mockAxis2MessageContext.getAxis2MessageContext()).thenReturn(mockMessageContext);
 
-        String jsonObject = "{\"outboundSMSMessageRequest\":{\"senderAddress\":\"tel:+94773906141\"," +
-                "\"transactionOperationStatus\":\"Charged\",\"clientCorrelator\":\"TES35cctrd25\",\"referenceCode\":\"REF-TEce2dfdwe\"," +
+        Map<String, String> headersMap = new HashMap<>();
+        headersMap.put("RESOURCE", "outbound/tel:+7555/requests");
+        headersMap.put("api.ut.context","smsmessaging/v1");
+
+        when(mockMessageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS)).thenReturn(headersMap);
+
+        String jsonObject = "{\"outboundSMSMessageRequest\":{\"senderAddress\":\"tel:+94773906149\"," +
+                "\"transactionOperationStatus\":\"Charged\",\"clientCorrelator\":\"SSTES35cctrd25\",\"referenceCode\":\"REF-TEce2dfdwe\"," +
                 "\"paymentAmount\":{\"chargingInformation\":{\"amount\":\"100\",\"description\":\"Alien Invaders Game\"," +
                 "\"currency\":\"USD\"},\"chargingMetaData\":{\"channel\":\"sms\",\"onBehalfOf\":\"Merchant\",\"taxAmount\":\"0\"}}}}\n";
 
-        mockMessageContext.setProperty("org.apache.synapse.commons.json.JsonInputStream",jsonObject);
+        when(mockMessageContext.getProperty("org.apache.synapse.commons.json.JsonInputStream")).thenReturn(new ByteArrayInputStream(jsonObject.getBytes()));
 
         boolean result = maskHandler.handleRequest(mockAxis2MessageContext);
         Assert.assertEquals(result, true);

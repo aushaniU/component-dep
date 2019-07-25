@@ -24,17 +24,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "apioperations")
 public class APIoperations {
 
-    private String operantionName;
+    private String requesturl;
     private String maskablType;
     private String propertyPath;
 
-    public String getOperantionName() {
-        return operantionName;
+    public String getRequesturl() {
+        return requesturl;
     }
 
-    @XmlElement(name = "operationname")
-    public void setOperantionName(String operationname) {
-        this.operantionName = operationname;
+    @XmlElement(name = "requesturl")
+    public void setRequesturl(String operationname) {
+        this.requesturl = operationname;
     }
 
     public String getPropertyPath() {

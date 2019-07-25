@@ -26,7 +26,6 @@ import com.wso2telco.dep.msisdnmaskservice.dto.MaskableProperty;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.apache.synapse.transport.passthru.util.RelayUtils;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -36,19 +35,15 @@ public class AttributeUpdate implements MsisdnMaskable {
     public void updateRequestData(MaskableProperty maskableProperty, MessageContext messageContext) throws IOException, XMLStreamException {
 
         MaskingHandler maskingHandler =new MaskingHandler();
-        org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
-                .getAxis2MessageContext();
-        RelayUtils.buildMessage(axis2MessageContext);
         String jsonString = JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
 
-        String mainJSONObject = "{\"outboundSMSMessageRequest\":{\"senderAddress\":\"tel:+94773906141\"," +
-                "\"transactionOperationStatus\":\"Charged\",\"clientCorrelator\":\"TES35cctrd25\",\"referenceCode\":\"REF-TEce2dfdwe\"," +
-                "\"paymentAmount\":{\"chargingInformation\":{\"amount\":\"100\",\"description\":\"Alien Invaders Game\"," +
-                "\"currency\":\"USD\"},\"chargingMetaData\":{\"channel\":\"sms\",\"onBehalfOf\":\"Merchant\",\"taxAmount\":\"0\"}}}}\n";
-        String encryptedValue = maskingHandler.getEncryptedValue(JsonPath.read(mainJSONObject,maskableProperty.getLocation()),"BCMask");
+        String encryptedValue = maskingHandler.getEncryptedValue(JsonPath.read(jsonString,maskableProperty.getLocation()),maskableProperty.getAlgorithem());
         String directory = "$.".concat(maskableProperty.getLocation());
-        DocumentContext doc = JsonPath.parse(mainJSONObject).set(directory,encryptedValue);
+        DocumentContext doc = JsonPath.parse(jsonString).set(directory,encryptedValue);
         System.out.println(doc.jsonString());
+
+        JsonUtil.getNewJsonPayload(((Axis2MessageContext) messageContext).getAxis2MessageContext(), doc.jsonString(),
+                true, true);
 
     }
 }

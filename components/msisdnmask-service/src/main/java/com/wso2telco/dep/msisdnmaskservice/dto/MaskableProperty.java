@@ -21,10 +21,11 @@ package com.wso2telco.dep.msisdnmaskservice.dto;
 public class MaskableProperty {
 
 
-    String maskablType = "Attribute";
-    String payloadorUrl = "payload";
-    String propertyName = "outboundSMSMessageRequest";
-    String location = "outboundSMSMessageRequest.senderAddress";
+    private String maskablType ;
+    private String payloadorUrl;
+    private String propertyName ;
+    private String location;
+    private String algorithem;
 
     public String getMaskablType() {
         return maskablType;
@@ -56,5 +57,13 @@ public class MaskableProperty {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getAlgorithem() {
+        return algorithem;
+    }
+
+    public void setAlgorithem(String algorithem) {
+        this.algorithem = algorithem;
     }
 }
