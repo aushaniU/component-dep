@@ -16,29 +16,20 @@
  *  *****************************************************************************
  */
 
-package com.wso2telco.dep.msisdnmaskservice.dto;
+package com.wso2telco.dep.msisdnmaskservice.ServiceFactory.Payment;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.wso2telco.dep.msisdnmaskservice.Maskerble.AttributeUpdate;
+import com.wso2telco.dep.msisdnmaskservice.ServiceFactory.APIServicable;
+import com.wso2telco.dep.msisdnmaskservice.dto.APIDTO;
+import org.apache.synapse.MessageContext;
 
-public class APIOperationDTO {
+public class ChargeRefund implements APIServicable {
+    @Override
+    public void updateJsonPayload(String type, MessageContext messageContext, APIDTO apidto) {
 
-    private String operantionName;
-    private String requesturl;
-
-    public String getOperantionName() {
-        return operantionName;
-    }
-
-    public void setOperantionName(String operantionName) {
-        this.operantionName = operantionName;
-    }
-
-    public String getRequesturl() {
-        return requesturl;
-    }
-
-    public void setRequesturl(String requesturl) {
-        this.requesturl = requesturl;
+        if(type.equalsIgnoreCase("request")){
+            AttributeUpdate attributeUpdate = new AttributeUpdate();
+            attributeUpdate.updateProperty(messageContext,apidto,"amountTransaction.endUserId");
+        }
     }
 }

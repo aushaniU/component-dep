@@ -16,29 +16,23 @@
  *  *****************************************************************************
  */
 
-package com.wso2telco.dep.msisdnmaskservice.dto;
+package com.wso2telco.dep.msisdnmaskservice.APIFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.wso2telco.dep.msisdnmaskservice.dto.APIOperationDTO;
 
-public class APIOperationDTO {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    private String operantionName;
-    private String requesturl;
+public abstract class AbstractAPIExecutor implements APIGenaratable {
 
-    public String getOperantionName() {
-        return operantionName;
+    public String isMaskableAPIService(APIOperationDTO apiOperationDTO,String resourcePath){
+        Pattern pattern = Pattern.compile(apiOperationDTO.getRequesturl());
+        Matcher matcher = pattern.matcher(resourcePath);
+        String serviceName = null;
+        if (matcher.matches()){
+            serviceName= apiOperationDTO.getOperantionName();
+        }
+        return serviceName;
     }
 
-    public void setOperantionName(String operantionName) {
-        this.operantionName = operantionName;
-    }
-
-    public String getRequesturl() {
-        return requesturl;
-    }
-
-    public void setRequesturl(String requesturl) {
-        this.requesturl = requesturl;
-    }
 }

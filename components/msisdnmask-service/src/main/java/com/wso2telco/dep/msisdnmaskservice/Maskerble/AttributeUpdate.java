@@ -22,7 +22,9 @@ package com.wso2telco.dep.msisdnmaskservice.Maskerble;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.wso2telco.core.maskservice.MaskerService.MaskingHandler;
+import com.wso2telco.dep.msisdnmaskservice.dto.APIDTO;
 import com.wso2telco.dep.msisdnmaskservice.dto.MaskableProperty;
+import org.apache.poi.util.SystemOutLogger;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
@@ -36,14 +38,35 @@ public class AttributeUpdate implements MsisdnMaskable {
 
         MaskingHandler maskingHandler =new MaskingHandler();
         String jsonString = JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
+        DocumentContext doc;
+        DocumentContext jsonContext = JsonPath.parse(jsonString);
+        for (String propertyPath:maskableProperty.getLocation()){
+            String encryptedValue = maskingHandler.getEncryptedValue(jsonContext.read(propertyPath),maskableProperty.getAlgorithem());
+            System.out.println(encryptedValue);
+            doc = JsonPath.parse(jsonString).set(propertyPath,encryptedValue);
+            System.out.println(doc.jsonString());
 
-        String encryptedValue = maskingHandler.getEncryptedValue(JsonPath.read(jsonString,maskableProperty.getLocation()),maskableProperty.getAlgorithem());
-        String directory = "$.".concat(maskableProperty.getLocation());
-        DocumentContext doc = JsonPath.parse(jsonString).set(directory,encryptedValue);
-        System.out.println(doc.jsonString());
+            JsonUtil.getNewJsonPayload(((Axis2MessageContext) messageContext).getAxis2MessageContext(), doc.jsonString(),
+                    true, true);
 
-        JsonUtil.getNewJsonPayload(((Axis2MessageContext) messageContext).getAxis2MessageContext(), doc.jsonString(),
-                true, true);
+        }
 
     }
+
+    @Override
+    public void updateProperty(MessageContext messageContext, APIDTO apidto,String path) {
+
+        String jsonObject = JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
+        DocumentContext jsonContext = JsonPath.parse(jsonObject);
+        String userValue = jsonContext.read(path);
+
+        MaskingHandler maskingHandler =new MaskingHandler();
+        String encryptedValue = maskingHandler.getEncryptedValue(userValue,apidto.getMaskAlgorithem());
+        DocumentContext documentContext = JsonPath.parse(jsonObject).set(path,encryptedValue);
+        /*JsonUtil.getNewJsonPayload(((Axis2MessageContext) messageContext).getAxis2MessageContext(), documentContext.jsonString(),
+                true, true);*/
+
+
+    }
+
 }

@@ -20,13 +20,13 @@ package com.wso2telco.dep.msisdnmaskservice.entity;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @XmlRootElement(name = "apioperations")
 public class APIoperations {
 
     private String requesturl;
-    private String maskablType;
-    private String propertyPath;
+    private String name;
 
     public String getRequesturl() {
         return requesturl;
@@ -37,21 +37,12 @@ public class APIoperations {
         this.requesturl = operationname;
     }
 
-    public String getPropertyPath() {
-        return propertyPath;
+    public String getOperationName() {
+        return name;
     }
 
-    @XmlElement(name="propertypath")
-    public void setPropertyPath(String propertypath) {
-        this.propertyPath = propertypath;
-    }
-
-    public String getMaskablType() {
-        return maskablType;
-    }
-
-    @XmlElement(name = "maskablType")
-    public void setMaskablType(String maskablType) {
-        this.maskablType = maskablType;
+    @XmlElement(name="name")
+    public void setOperationName(String name) {
+        this.name = name;
     }
 }

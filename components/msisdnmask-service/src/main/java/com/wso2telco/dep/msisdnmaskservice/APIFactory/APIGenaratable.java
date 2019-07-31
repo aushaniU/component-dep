@@ -16,29 +16,12 @@
  *  *****************************************************************************
  */
 
-package com.wso2telco.dep.msisdnmaskservice.dto;
+package com.wso2telco.dep.msisdnmaskservice.APIFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.wso2telco.dep.msisdnmaskservice.ServiceFactory.APIServicable;
+import com.wso2telco.dep.msisdnmaskservice.dto.APIDTO;
 
-public class APIOperationDTO {
+public interface APIGenaratable {
 
-    private String operantionName;
-    private String requesturl;
-
-    public String getOperantionName() {
-        return operantionName;
-    }
-
-    public void setOperantionName(String operantionName) {
-        this.operantionName = operantionName;
-    }
-
-    public String getRequesturl() {
-        return requesturl;
-    }
-
-    public void setRequesturl(String requesturl) {
-        this.requesturl = requesturl;
-    }
+    public APIServicable getAPIHandler(APIDTO apidto,String resourcePath);
 }

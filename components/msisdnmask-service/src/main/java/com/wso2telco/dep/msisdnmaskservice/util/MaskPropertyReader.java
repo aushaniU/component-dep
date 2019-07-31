@@ -71,16 +71,16 @@ public class MaskPropertyReader {
             APIDTO apidto = new APIDTO();
             apidto.setApiName(api.getApiName());
             apidto.setRegexPattern(api.getRegexPattern());
+            apidto.setMaskAlgorithem(api.getMaskAlgorithem());
 
-            System.out.println(apidto.getApiName()+apidto.getRegexPattern());
+            System.out.println("---"+apidto.getMaskAlgorithem());
 
             for(APIoperations apiOperation: api.getApiOperationList()) {
 
                 APIOperationDTO apiOperationDTO = new APIOperationDTO();
 
-                apiOperationDTO.setOperantionName(apiOperation.getRequesturl());
-                apiOperationDTO.setPropertyPath(apiOperation.getPropertyPath());
-                apiOperationDTO.setMaskablType(apiOperation.getMaskablType());
+                apiOperationDTO.setOperantionName(apiOperation.getOperationName());
+                apiOperationDTO.setRequesturl(apiOperation.getRequesturl());
 
                 apidto.getApiOperationList().add(apiOperationDTO);
             }

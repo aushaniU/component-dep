@@ -18,13 +18,16 @@
 
 package com.wso2telco.dep.msisdnmaskservice.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MaskableProperty {
 
 
     private String maskablType ;
     private String payloadorUrl;
     private String propertyName ;
-    private String location;
+    private List<String> location =new ArrayList<String>();;
     private String algorithem;
 
     public String getMaskablType() {
@@ -51,11 +54,11 @@ public class MaskableProperty {
         this.propertyName = propertyName;
     }
 
-    public String getLocation() {
+    public List<String> getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(List<String> location) {
         this.location = location;
     }
 

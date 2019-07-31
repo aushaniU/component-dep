@@ -16,16 +16,31 @@
  *  *****************************************************************************
  */
 
-package com.wso2telco.dep.msisdnmaskservice.Maskerble;
+package com.wso2telco.dep.msisdnmaskservice.ServiceFactory.SMSMessaging;
 
+import com.wso2telco.dep.msisdnmaskservice.Maskerble.ListUpdate;
+import com.wso2telco.dep.msisdnmaskservice.ServiceFactory.APIServicable;
 import com.wso2telco.dep.msisdnmaskservice.dto.APIDTO;
-import com.wso2telco.dep.msisdnmaskservice.dto.MaskableProperty;
 import org.apache.synapse.MessageContext;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
+public class SendSMS implements APIServicable {
 
-public interface MsisdnMaskable {
-    void updateRequestData(MaskableProperty maskableProperty, MessageContext messageContext) throws IOException, XMLStreamException;
-    void updateProperty(MessageContext messageContext, APIDTO apidto, String path);
+
+    @Override
+    public void updateJsonPayload(String type, MessageContext messageContext, APIDTO apidto) {
+        if(type.equalsIgnoreCase("request")){
+           handlerRequest(messageContext,apidto);
+        } else if(type.equalsIgnoreCase("response")){
+            handleResponse(messageContext,apidto);
+        }
+    }
+
+    private void handlerRequest(MessageContext messageContext, APIDTO apidto){
+        ListUpdate listUpdate = new ListUpdate();
+        listUpdate.updateProperty(messageContext,apidto,"outboundSMSMessageRequest.address.*");
+    }
+
+    private void handleResponse(MessageContext messageContext, APIDTO apidto){
+
+    }
 }

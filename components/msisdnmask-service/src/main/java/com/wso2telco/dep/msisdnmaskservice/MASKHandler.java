@@ -18,9 +18,12 @@
 
 package com.wso2telco.dep.msisdnmaskservice;
 
+import com.wso2telco.dep.msisdnmaskservice.APIFactory.APIFactory;
+import com.wso2telco.dep.msisdnmaskservice.APIFactory.APIGenaratable;
 import com.wso2telco.dep.msisdnmaskservice.MSISDNMasker.AttributeBaseMasker;
 import com.wso2telco.dep.msisdnmaskservice.MSISDNMasker.ListBaseMasker;
 import com.wso2telco.dep.msisdnmaskservice.MSISDNMasker.MaskFactory;
+import com.wso2telco.dep.msisdnmaskservice.ServiceFactory.APIServicable;
 import com.wso2telco.dep.msisdnmaskservice.dto.APIDTO;
 import com.wso2telco.dep.msisdnmaskservice.dto.APIListDTO;
 import com.wso2telco.dep.msisdnmaskservice.dto.APIOperationDTO;
@@ -42,83 +45,37 @@ import java.util.regex.Pattern;
  */
 public class MASKHandler extends AbstractHandler {
 
-    private void updateRequestData (MaskableProperty property,MessageContext messageContext) {
-
-        MaskFactory maskFactory= null;
-
-        switch(property.getMaskablType()){
-            case "Attribute":
-                maskFactory =  new AttributeBaseMasker();
-            break;
-            case "List":
-                maskFactory = new ListBaseMasker();
-            break;
-        }
-
-        try {
-            maskFactory.getMasker().updateRequestData(property,messageContext);
-        } catch (XMLStreamException xmlSEx){
-                System.out.println("Error while getting validator class"+ xmlSEx);
-            } catch (IOException ioEx){
-            System.out.println("Error while getting validator class"+ ioEx);
-            }
-
-
-    }
-
     @Override
     public boolean handleRequest(MessageContext messageContext){
 
-        Object headers = ((Axis2MessageContext) messageContext).getAxis2MessageContext().getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
-        Map headersMap = (Map) headers;
-        String resourcePath = (String)headersMap.get("RESOURCE");
-        String apiContext = (String) headersMap.get("api.ut.context");
-        String apiName = apiContext.split("/")[0];
-
-        MaskableProperty maskPropertyReader = getmaskableProperties(apiName ,resourcePath);
-
-        if(maskPropertyReader!=null){
-            updateRequestData(maskPropertyReader,messageContext);
-        } else {
-            System.out.println("Not a maskable msisdn");
-        }
-
+        String apidirection ="request";
+        updateJsonObject(apidirection,messageContext);
 
         return true;
     }
 
     @Override
     public boolean handleResponse(MessageContext messageContext) {
+        String apidirection ="response";
+        updateJsonObject(apidirection,messageContext);
         return false;
     }
 
-    private MaskableProperty getmaskableProperties(String apiName,String resourcePath){
-       MaskPropertyReader maskPropertyReader = MaskPropertyReader.getInstance();
-       APIListDTO apiListDTO = maskPropertyReader.getApiListDTO();
-       List<APIDTO> apidtoList = apiListDTO.getApiList();
+    private void updateJsonObject(String type, MessageContext messageContext) {
+        Object headers = ((Axis2MessageContext) messageContext).getAxis2MessageContext().getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+        Map headersMap = (Map) headers;
+        String resourcePath = (String) headersMap.get("RESOURCE");
+        String apiContext = (String) headersMap.get("api.ut.context");
+        String apiName = apiContext.split("/")[0];
+        List<APIDTO> apidtoList = MaskPropertyReader.getInstance().getApiListDTO().getApiList();
 
-
-        MaskableProperty maskableProperty = null;
-        for(APIDTO apidto: apidtoList){
-            if(apidto.getApiName().equals(apiName)){
-                List<APIOperationDTO> apiOperationDTOS = apidto.getApiOperationList();
-
-                for(APIOperationDTO apiOperationDTO: apiOperationDTOS){
-                    String requesturlpattern = apiOperationDTO.getOperantionName();
-                    Pattern pattern = Pattern.compile(requesturlpattern);
-                    Matcher matcher = pattern.matcher(resourcePath);
-                    if (matcher.matches()) {
-                        maskableProperty = new MaskableProperty();
-                        maskableProperty.setLocation(apiOperationDTO.getPropertyPath());
-                        maskableProperty.setMaskablType(apiOperationDTO.getMaskablType());
-                        maskableProperty.setAlgorithem(apidto.getMaskAlgorithem());
-                     break;
-                    }
-                }
+        for (APIDTO apidto : apidtoList) {
+            if (apidto.getApiName().equalsIgnoreCase(apiName)) {
+                APIFactory apiFactory = new APIFactory();
+                apiFactory.getAPIFactory(apiName).getAPIHandler(apidto,resourcePath).updateJsonPayload(type,messageContext,apidto);
 
             }
-        }
 
-        return maskableProperty;
+        }
     }
 }

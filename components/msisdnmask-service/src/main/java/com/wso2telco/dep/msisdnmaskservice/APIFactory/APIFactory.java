@@ -16,29 +16,20 @@
  *  *****************************************************************************
  */
 
-package com.wso2telco.dep.msisdnmaskservice.dto;
+package com.wso2telco.dep.msisdnmaskservice.APIFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.wso2telco.dep.msisdnmaskservice.ServiceFactory.SMSMessaging.SMSMessagingFactory;
 
-public class APIOperationDTO {
+public class APIFactory {
+   public APIGenaratable getAPIFactory(String apiName){
+       APIGenaratable apiGenaratable =null;
 
-    private String operantionName;
-    private String requesturl;
+       switch (apiName) {
+           case "smsmessaging":
+               apiGenaratable = new SMSMessagingFactory();
 
-    public String getOperantionName() {
-        return operantionName;
-    }
+       }
 
-    public void setOperantionName(String operantionName) {
-        this.operantionName = operantionName;
-    }
-
-    public String getRequesturl() {
-        return requesturl;
-    }
-
-    public void setRequesturl(String requesturl) {
-        this.requesturl = requesturl;
-    }
+    return apiGenaratable;
+   }
 }
